@@ -1,0 +1,9 @@
+/* Hide the clickable status prompt area (icon, text, suggestion) */
+span[class*="inner_"][class*="clickable_"]:has(svg[class*="addStatusIcon_"]) {
+    display: none !important;
+}
+
+/* Hide the ::before bubble on the parent, only when it contains a status prompt */
+div[class*="outer_"]:has(svg[class*="addStatusIcon_"])::before {
+    display: none !important;
+}
