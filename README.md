@@ -1,4 +1,4 @@
-# HideStatusPrompts
+# Vencord: Hide Status Prompts
 
 Discord user-panel cleanup for Vencord: hide the custom status prompt suggestions that appear near your avatar.
 
