@@ -1,63 +1,58 @@
 # Vencord: Hide Status Prompts
 
-Discord user-panel cleanup for Vencord: hide the custom status prompt suggestions that appear near your avatar.
+HideStatusPrompts is a source-only Vencord userplugin that hides Discord's suggested custom-status prompts while preserving the normal **Add Status** row.
 
-Discord can show rotating status prompts such as `Just finished playing...` or `Favourite collectible?` in the bottom-left user panel. HideStatusPrompts removes that prompt area with targeted CSS only, without JavaScript patches or API calls.
+Examples of the suggestions it targets include prompts such as `Just finished playing...` or `Favourite collectible?` in Discord's user panel.
 
-## Core Behavior
+## Behavior
 
-| Feature | What it does | How |
-|---|---|---|
-| **Prompt Hiding** | Removes the custom status prompt text and icon | Targets the clickable prompt area in the user panel |
-| **Bubble Cleanup** | Hides the decorative parent bubble for the prompt | Targets the parent `::before` bubble when a prompt icon is present |
-| **CSS-Only Runtime** | Avoids Discord internals and API calls | Injects `style.css` through the Vencord plugin |
-| **No JavaScript Patches** | Keeps behavior narrow and low-maintenance | Uses selectors plus `:has()` instead of webpack patches |
+- Hides only containers containing a suggested status prompt marked with both Discord's `addStatusPrompt_` and `italicPrompt_` class fragments
+- Preserves the normal editable Add Status row because that row is not marked as an italic prompt
+- Uses CSS only, with no Discord API calls or webpack patches
+- Applies automatically while the plugin is enabled
+- Has no commands, settings, or runtime controls
+
+## Current Selectors
+
+The stylesheet currently targets these two user-panel container variants:
+
+```css
+div[class*="referenceContainer_"]:has([class*="addStatusPrompt_"][class*="italicPrompt_"]),
+div[class*="container_"][class*="editable_"]:has([class*="addStatusPrompt_"][class*="italicPrompt_"])
+```
+
+The entire matching prompt container is hidden. The plugin does not hide a parent `::before` bubble and does not target Discord's normal add-status icon.
 
 ## Requirements
 
-- A working [Vencord](https://vencord.dev) development setup
 - Discord desktop
+- A working [Vencord development setup](https://docs.vencord.dev/installing/)
 - `pnpm`, as used by Vencord
 
-## Install
+## Installation
 
-1. Set up [Vencord](https://vencord.dev) if you have not already.
-2. Copy the `hideStatusPrompts` folder into your Vencord `src/userplugins/` directory.
-3. Rebuild Vencord:
+This repository contains a Vencord userplugin source folder, not a standalone npm package.
 
-```bash
-pnpm build
-```
+1. Copy the `hideStatusPrompts` folder into `src/userplugins/` in your Vencord checkout.
+2. Build Vencord using the instructions for your installation.
+3. Enable **HideStatusPrompts** in **Discord Settings > Vencord > Plugins**.
 
-4. Enable **HideStatusPrompts** in Discord Settings > Vencord > Plugins.
-
-## Usage
-
-Once enabled, HideStatusPrompts applies automatically when Discord loads.
-
-There are no commands, settings, or runtime controls. Disable the plugin from Vencord's plugin list to restore Discord's status prompts.
-
-## How It Works
-
-The plugin imports `style.css` and lets Vencord inject the stylesheet into Discord. The CSS hides the clickable status prompt area that contains Discord's add-status icon, then hides the matching parent bubble so the prompt does not leave visual clutter behind.
+Disable the plugin to restore Discord's suggested prompts.
 
 ## Technical Details
 
 - Plugin name: `HideStatusPrompts`
-- Author: `saint`
-- Uses Vencord's `definePlugin`
-- Imports `style.css`
-- Targets `span[class*="inner_"][class*="clickable_"]:has(svg[class*="addStatusIcon_"])`
-- Targets `div[class*="outer_"]:has(svg[class*="addStatusIcon_"])::before`
-- Does not patch webpack modules
-- Does not call Discord APIs
+- Author: `saintordevil`
+- Entrypoint: `index.ts`
+- Stylesheet: `style.css`
+- Uses Vencord's `definePlugin` and stylesheet import
+- Uses the CSS relational pseudo-class `:has()`
+- Makes no network requests
 
-## Notes
+## Maintenance Note
 
-- This is a visual cleanup plugin only
-- Discord class names can change, so selectors may need updates if Discord changes the user panel markup
-- The plugin intentionally has no settings because it performs one narrow UI cleanup
+Discord's generated class names and user-panel markup can change. If suggestions reappear or the normal Add Status row is affected after a Discord update, the class fragments in `style.css` may need to be updated.
 
 ## License
 
-MIT
+[GNU General Public License v3.0 or later](LICENSE)

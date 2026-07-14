@@ -1,9 +1,5 @@
-/* Hide the clickable status prompt area (icon, text, suggestion) */
-span[class*="inner_"][class*="clickable_"]:has(svg[class*="addStatusIcon_"]) {
-    display: none !important;
-}
-
-/* Hide the ::before bubble on the parent, only when it contains a status prompt */
-div[class*="outer_"]:has(svg[class*="addStatusIcon_"])::before {
+/* A suggested prompt is marked italic; the normal "add custom status" row is not. */
+div[class*="referenceContainer_"]:has([class*="addStatusPrompt_"][class*="italicPrompt_"]),
+div[class*="container_"][class*="editable_"]:has([class*="addStatusPrompt_"][class*="italicPrompt_"]) {
     display: none !important;
 }
